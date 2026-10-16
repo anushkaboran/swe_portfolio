@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Anushka Boran — Software Engineering</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Lato:wght@300;400;700&family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { overflow-x: hidden; background: #07070D; }
+
+.track-view {
+  display: none;
+  min-height: 100vh;
+}
+.track-view.active { display: block; }
+
+/* Inline back links — part of each nav's own flex row, so they can never overlap content below */
+.nav-back-link {
+  font-size: 11px; font-weight: 600; letter-spacing: 0.08em;
+  text-decoration: none; cursor: pointer; margin-right: 20px;
+  white-space: nowrap;
+}
+.nav-left { display: flex; align-items: center; }
+
+
+
+/* ═══════════════════════════════════════════
+   SWE TRACK — CIRCUIT GAME WORLD
+═══════════════════════════════════════════ */
+#track-swe {
+  background:
+    radial-gradient(ellipse 700px 500px at 92% -8%, rgba(0,200,255,0.10) 0%, transparent 60%),
+    radial-gradient(ellipse 800px 550px at -5% 60%, rgba(179,136,255,0.07) 0%, transparent 60%),
+    radial-gradient(ellipse 600px 500px at 100% 100%, rgba(255,110,199,0.05) 0%, transparent 55%),
+    #020812;
+  font-family: 'Space Grotesk', sans-serif;
+  color: #C8E8FF;
+  position: relative;
+}
+
+/* Circuit-board grid — subtle traces + nodes, ties to the track's identity */
+#track-swe::before {
+  content: '';
+  position: absolute; inset: 0; pointer-events: none; z-index: -1;
+  background-image:
+    linear-gradient(rgba(0,200,255,0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,200,255,0.05) 1px, transparent 1px),
+    radial-gradient(circle, rgba(0,200,255,0.15) 1.5px, transparent 1.5px);
+  background-size: 48px 48px, 48px 48px, 48px 48px;
+  background-position: 0 0, 0 0, 0 0;
+  mask-image: linear-gradient(180deg, rgba(0,0,0,0.9) 0%, transparent 720px);
+}
+
+.swe-nav {
+  padding: 30px 48px 20px;
+  border-bottom: 1px solid rgba(0,200,255,0.1);
+  display: flex; align-items: center; justify-content: space-between;
+  position: sticky; top: 0; z-index: 10;
+  background: rgba(2,8,18,0.92);
+  backdrop-filter: blur(12px);
+}
+
+.swe-nav-logo {
+  font-size: 14px; font-weight: 700; color: #00C8FF;
+  letter-spacing: 0.08em;
+}
+
+.swe-nav-level {
+  font-size: 11px; color: #00C8FF;
+  display: flex; align-items: center; gap: 10px;
+}
+
+.swe-level-bar {
+  width: 80px; height: 4px;
+  background: rgba(0,200,255,0.15); border-radius: 2px;
+  overflow: hidden;
+}
+
+.swe-level-fill {
+  height: 100%; background: #00C8FF;
+  box-shadow: 0 0 6px rgba(0,200,255,0.6);
+  border-radius: 2px;
+}
+
+.swe-hero {
+  padding: 80px 48px 60px;
+  border-bottom: 1px solid rgba(0,200,255,0.08);
+  display: grid; grid-template-columns: 1fr 380px; gap: 64px; align-items: start;
+}
+
+.swe-hero-badge {
+  font-size: 10px; letter-spacing: 0.15em; color: #00C8FF;
+  font-weight: 600; margin-bottom: 20px;
+  display: flex; align-items: center; gap: 8px;
+}
+
+.swe-badge-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: #00FF88; box-shadow: 0 0 6px #00FF88;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; } 50% { opacity: 0.4; }
+}
+
+.swe-name {
+  font-size: clamp(40px, 5vw, 68px);
+  font-weight: 700; line-height: 1.0; letter-spacing: -1px;
+  color: #E8F4FF; margin-bottom: 20px;
+}
+
+.swe-name span { color: #00C8FF; }
+
+.swe-desc {
+  font-size: 16px; color: #6090B0; line-height: 1.7;
+  max-width: 480px; margin-bottom: 36px; font-weight: 400;
+}
+
+.swe-tech-stack {
+  display: flex; flex-wrap: wrap; gap: 8px;
+}
+
+.swe-tech {
+  font-size: 11px; font-weight: 500;
+  padding: 5px 12px;
+  border: 1px solid rgba(0,200,255,0.25);
+  color: #4090B0;
+  font-family: 'Space Mono', monospace;
+  transition: border-color 0.2s, color 0.2s, background 0.2s;
+}
+.swe-tech:hover { border-color: rgba(0,200,255,0.6); color: #00C8FF; background: rgba(0,200,255,0.06); }
+
+.swe-hero-right {}
+
+/* Hero code-snippet panel */
+.swe-code-panel {
+  border: 1px solid rgba(0,200,255,0.2);
+  background: rgba(2,8,18,0.6);
+  margin-bottom: 20px;
+  overflow: hidden;
+}
+.swe-code-titlebar {
+  display: flex; align-items: center; gap: 7px;
+  padding: 10px 14px;
+  border-bottom: 1px solid rgba(0,200,255,0.12);
+  background: rgba(0,200,255,0.04);
+}
+.swe-code-dot { width: 9px; height: 9px; border-radius: 50%; background: rgba(0,200,255,0.15); }
+.swe-code-dot:nth-child(3) { background: rgba(0,200,255,0.4); }
+.swe-code-filename { margin-left: 6px; font-family: 'Space Mono', monospace; font-size: 10.5px; color: #4090B0; }
+.swe-code-body {
+  padding: 18px 20px; font-family: 'Space Mono', monospace;
+  font-size: 12.5px; line-height: 1.9;
+}
+.swe-code-kw { color: #B388FF; }
+.swe-code-prop { color: #A8D4F0; }
+.swe-code-str { color: #4ADE80; }
+.swe-code-bool { color: #FFA94D; }
+.swe-code-punc { color: #406080; }
+.swe-code-com { color: #305070; }
+
+.swe-achievement {
+  border: 1px solid rgba(0,200,255,0.15);
+  border-left: 3px solid var(--accent, rgba(0,200,255,0.4));
+  padding: 20px;
+  margin-bottom: 12px;
+  background: rgba(0,200,255,0.03);
+  display: flex; align-items: flex-start; gap: 14px;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.swe-achievement:hover { transform: translateX(2px); box-shadow: 0 4px 16px var(--accent-soft, rgba(0,200,255,0.08)); }
+
+.swe-achievement-icon { font-size: 20px; flex-shrink: 0; margin-top: 2px; }
+
+.swe-achievement-title {
+  font-size: 13px; font-weight: 600; color: #A8D4F0;
+  margin-bottom: 4px;
+}
+
+.swe-achievement-desc { font-size: 11px; color: #4070A0; line-height: 1.5; }
+
+.swe-section {
+  padding: 60px 48px;
+  border-bottom: 1px solid rgba(0,200,255,0.08);
+}
+
+.swe-section-header { margin-bottom: 40px; display: flex; align-items: center; gap: 16px; }
+
+.swe-section-title {
+  font-size: 20px; font-weight: 700; color: #C8E8FF; letter-spacing: -0.3px;
+}
+
+.swe-section-line {
+  flex: 1; height: 1px; background: rgba(0,200,255,0.1);
+}
+
+.swe-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; }
+
+/* Per-project accent palette — each shipped project gets its own color
+   instead of one flat cyan wash across every card. */
+.swe-accent-blue   { --accent: #00C8FF; --accent-soft: rgba(0,200,255,0.08); --accent-soft2: rgba(0,200,255,0.3); }
+.swe-accent-purple { --accent: #B388FF; --accent-soft: rgba(179,136,255,0.08); --accent-soft2: rgba(179,136,255,0.3); }
+.swe-accent-green  { --accent: #4ADE80; --accent-soft: rgba(74,222,128,0.08); --accent-soft2: rgba(74,222,128,0.3); }
+.swe-accent-pink   { --accent: #FF6EC7; --accent-soft: rgba(255,110,199,0.08); --accent-soft2: rgba(255,110,199,0.3); }
+.swe-accent-red    { --accent: #FF5C5C; --accent-soft: rgba(255,92,92,0.08); --accent-soft2: rgba(255,92,92,0.3); }
+.swe-accent-amber  { --accent: #FFA94D; --accent-soft: rgba(255,169,77,0.08); --accent-soft2: rgba(255,169,77,0.3); }
+
+.swe-card {
+  border: 1px solid rgba(0,200,255,0.12);
+  border-left: 3px solid var(--accent, rgba(0,200,255,0.3));
+  padding: 24px;
+  background: rgba(0,200,255,0.02);
+  transition: border-color 0.2s, background 0.2s, transform 0.2s, box-shadow 0.2s;
+  position: relative;
+  cursor: pointer;
+}
+
+.swe-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, var(--accent, #00C8FF), transparent);
+  opacity: 0; transition: opacity 0.2s;
+}
+
+.swe-card:hover {
+  border-color: var(--accent-soft2, rgba(0,200,255,0.3));
+  background: rgba(0,200,255,0.04);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px var(--accent-soft, rgba(0,200,255,0.08));
+}
+.swe-card:hover::before { opacity: 1; }
+
+.swe-card-tag {
+  font-size: 9px; letter-spacing: 0.15em; color: var(--accent, #00C8FF);
+  margin-bottom: 12px; font-family: 'Space Mono', monospace;
+}
+
+.swe-card-title { font-size: 15px; font-weight: 600; color: #A8D4F0; margin-bottom: 6px; }
+.swe-card-org { font-size: 11px; color: #406080; margin-bottom: 12px; }
+.swe-card-desc { font-size: 13px; color: #406080; line-height: 1.65; }
+
+.swe-stack-pills { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 14px; }
+.swe-pill {
+  font-size: 9px; color: #305070; border: 1px solid rgba(0,200,255,0.12);
+  padding: 3px 8px; font-family: 'Space Mono', monospace;
+}
+
+.swe-card-open {
+  font-size: 10px; color: var(--accent, #00C8FF); font-family: 'Space Mono', monospace;
+  letter-spacing: 0.04em; margin-top: 14px; opacity: 0; transition: opacity 0.2s;
+}
+.swe-card:hover .swe-card-open { opacity: 1; }
+
+
+/* ═══ SWE CASE STUDY MODAL — code editor window ═══ */
+.swe-modal-overlay {
+  display: none; position: fixed; inset: 0; z-index: 2200;
+  background: rgba(1,4,10,0.82);
+  padding: 40px 20px; overflow-y: auto;
+}
+.swe-modal-overlay.active { display: block; }
+
+.swe-modal {
+  max-width: 780px; margin: 0 auto;
+  background: #020818;
+  border: 1px solid var(--accent-soft2, rgba(0,200,255,0.3));
+  border-top: 3px solid var(--accent, #00C8FF);
+  box-shadow: 0 0 40px var(--accent-soft, rgba(0,200,255,0.1)), 0 30px 80px rgba(0,0,0,0.6);
+  font-family: 'Space Grotesk', sans-serif;
+  animation: projModalIn 0.25s ease;
+}
+
+.swe-modal-titlebar {
+  display: flex; align-items: center; gap: 10px;
+  padding: 12px 16px;
+  border-bottom: 1px solid rgba(0,200,255,0.12);
+  background: rgba(0,200,255,0.03);
+}
+.swe-modal-dot { width: 10px; height: 10px; border-radius: 50%; background: rgba(0,200,255,0.15); }
+.swe-modal-dot:nth-child(3) { background: var(--accent-soft2, rgba(0,200,255,0.4)); }
+.swe-modal-file {
+  font-family: 'Space Mono', monospace; font-size: 11px; color: var(--accent, #00C8FF);
+  background: rgba(0,200,255,0.06); border: 1px solid var(--accent-soft2, rgba(0,200,255,0.2));
+  padding: 4px 12px; border-radius: 4px 4px 0 0; margin-left: 6px;
+}
+.swe-modal-close {
+  margin-left: auto; background: none; border: none; color: #406080; font-size: 16px; cursor: pointer;
+  line-height: 1; padding: 0 4px;
+}
+.swe-modal-close:hover { color: #C8E8FF; }
+
+.swe-modal-body { padding: 32px 40px 40px; }
+.swe-modal-badge {
+  font-size: 9px; letter-spacing: 0.15em; color: var(--accent, #00C8FF);
+  font-family: 'Space Mono', monospace;
+  border: 1px solid var(--accent-soft2, rgba(0,200,255,0.3)); padding: 3px 10px;
+  display: inline-block; margin-bottom: 16px;
+}
+.swe-modal-title { font-size: 26px; font-weight: 700; color: #E8F4FF; margin-bottom: 10px; }
+.swe-modal-tagline { font-size: 13px; color: #6090B0; line-height: 1.7; margin-bottom: 32px; }
+
+.swe-modal-section { margin-bottom: 26px; }
+.swe-modal-comment {
+  font-family: 'Space Mono', monospace; font-size: 10.5px; color: #305070; margin-bottom: 8px;
+}
+.swe-modal-label {
+  font-size: 11px; font-weight: 700; color: var(--accent, #00C8FF); letter-spacing: 0.1em;
+  margin-bottom: 10px; font-family: 'Space Mono', monospace;
+}
+.swe-modal-text { font-size: 13px; color: #A8D4F0; line-height: 1.8; }
+
+.swe-modal-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+.swe-modal-tag {
+  font-size: 10.5px; color: var(--accent, #00C8FF); font-family: 'Space Mono', monospace;
+  border: 1px solid var(--accent-soft2, rgba(0,200,255,0.3));
+  padding: 5px 10px;
+}
+
+
+
+@keyframes projModalIn { from { opacity: 0; transform: translateY(16px) scale(0.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
+.fade-in { animation: fadeIn 0.5s ease forwards; }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 768px) {
+  .track-grid { grid-template-columns: 1fr 1fr; height: auto; }
+  .track-panel { min-height: 180px; }
+  .mkt-hero { grid-template-columns: 1fr; padding: 60px 24px; }
+  .mkt-section { padding: 48px 24px; }
+  .pm-hero { padding: 80px 24px 60px; flex-direction: column; align-items: flex-start; gap: 32px; }
+  .pm-hero-visual { width: 100%; max-width: 320px; order: -1; align-self: center; }
+  .pm-section { padding: 60px 24px; }
+  .pm-metrics { grid-template-columns: 1fr; }
+  .cyber-hero, .cyber-section, .cyber-boot { padding: 40px 24px; }
+  .cyber-nav { padding: 18px 24px; }
+  .cyber-stats { grid-template-columns: 1fr 1fr; }
+  .swe-hero { grid-template-columns: 1fr; padding: 60px 24px 40px; }
+  .swe-section { padding: 48px 24px; }
+  .swe-nav, .pm-nav { padding: 16px 24px; }
+  .mkt-topbar, .pm-nav, .cyber-nav, .swe-nav { flex-wrap: wrap; row-gap: 10px; }
+  .mkt-topbar-links, .pm-nav-links, .cyber-nav-links { width: 100%; justify-content: flex-start; gap: 16px; }
+  .swe-nav-level { width: 100%; }
+  .landing-header { padding: 0 24px; }
+}
+
+</style>
+</head>
+<body>
+<!-- ═══ SWE TRACK — CIRCUIT GAME ═══ -->
+<div class="track-view active" id="track-swe">
+  <div class="swe-nav">
+    <div class="nav-left">
+      <div class="swe-nav-logo">AB.EXE</div>
+    </div>
+    <div class="swe-nav-level">
+      <span>LVL 3 · JUNIOR ENGINEER</span>
+      <div class="swe-level-bar"><div class="swe-level-fill" style="width:72%"></div></div>
+      <span>72 XP</span>
+    </div>
+  </div>
+
+  <div class="swe-hero fade-in">
+    <div>
+      <div class="swe-hero-badge">
+        <div class="swe-badge-dot"></div>
+        <span>ACTIVELY SHIPPING</span>
+      </div>
+      <div class="swe-name">Building AI<br><span>at enterprise</span><br>scale.</div>
+      <div class="swe-desc">Backend engineer and AI systems builder. I ship production code, not demos. Currently building VeraHR at Quadrant Technologies and working as a product engineer at a stealth AI startup.</div>
+      <div class="swe-tech-stack">
+        <span class="swe-tech">Python</span>
+        <span class="swe-tech">React</span>
+        <span class="swe-tech">Azure</span>
+        <span class="swe-tech">AWS</span>
+        <span class="swe-tech">LLMs</span>
+        <span class="swe-tech">RAG</span>
+        <span class="swe-tech">FastAPI</span>
+        <span class="swe-tech">SQL</span>
+        <span class="swe-tech">Agentic AI</span>
+      </div>
+    </div>
+
+    <div class="swe-hero-right">
+      <div class="swe-code-panel">
+        <div class="swe-code-titlebar">
+          <div class="swe-code-dot"></div><div class="swe-code-dot"></div><div class="swe-code-dot"></div>
+          <div class="swe-code-filename">profile.ts</div>
+        </div>
+        <div class="swe-code-body">
+          <div><span class="swe-code-kw">const</span> <span class="swe-code-prop">engineer</span> <span class="swe-code-punc">=</span> <span class="swe-code-punc">{</span></div>
+          <div>&nbsp;&nbsp;<span class="swe-code-prop">name</span><span class="swe-code-punc">:</span> <span class="swe-code-str">"Anushka Boran"</span><span class="swe-code-punc">,</span></div>
+          <div>&nbsp;&nbsp;<span class="swe-code-prop">role</span><span class="swe-code-punc">:</span> <span class="swe-code-str">"Backend + AI Systems"</span><span class="swe-code-punc">,</span></div>
+          <div>&nbsp;&nbsp;<span class="swe-code-prop">stack</span><span class="swe-code-punc">:</span> <span class="swe-code-punc">[</span><span class="swe-code-str">"Python"</span><span class="swe-code-punc">,</span> <span class="swe-code-str">"React"</span><span class="swe-code-punc">,</span> <span class="swe-code-str">"AWS"</span><span class="swe-code-punc">],</span></div>
+          <div>&nbsp;&nbsp;<span class="swe-code-prop">shipping</span><span class="swe-code-punc">:</span> <span class="swe-code-bool">true</span><span class="swe-code-punc">,</span></div>
+          <div>&nbsp;&nbsp;<span class="swe-code-com">// no demos, only production</span></div>
+          <div><span class="swe-code-punc">};</span></div>
+        </div>
+      </div>
+      <div class="swe-achievement" style="--accent:#FFA94D; --accent-soft:rgba(255,169,77,0.08);">
+        <div class="swe-achievement-icon">🏆</div>
+        <div>
+          <div class="swe-achievement-title">AWSHacks 2026 — 3rd Place</div>
+          <div class="swe-achievement-desc">Shipped a complete serverless AI platform in 24 hours. Lambda, DynamoDB, Step Functions, API Gateway, React frontend.</div>
+        </div>
+      </div>
+      <div class="swe-achievement" style="--accent:#00C8FF; --accent-soft:rgba(0,200,255,0.08);">
+        <div class="swe-achievement-icon">⚡</div>
+        <div>
+          <div class="swe-achievement-title">VeraHR — Enterprise AI Agent</div>
+          <div class="swe-achievement-desc">Built for Microsoft, Google, and Amazon scale. Azure Cosmos DB, RAG pipelines, Entra ID auth, autonomous compliance agents.</div>
+        </div>
+      </div>
+      <div class="swe-achievement" style="--accent:#B388FF; --accent-soft:rgba(179,136,255,0.08);">
+        <div class="swe-achievement-icon">🎓</div>
+        <div>
+          <div class="swe-achievement-title">UW Bothell · CS & SE · 3.7 GPA</div>
+          <div class="swe-achievement-desc">Cybersecurity minor. Machine Learning, Software Engineering, Network Architecture, Data Privacy coursework.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="swe-section">
+    <div class="swe-section-header">
+      <div class="swe-section-title">Shipped Projects</div>
+      <div class="swe-section-line"></div>
+    </div>
+    <div class="swe-grid">
+      <div class="swe-card swe-accent-blue" onclick="openSweModal('verahr')">
+        <div class="swe-card-tag">ENTERPRISE · PRODUCTION</div>
+        <div class="swe-card-title">VeraHR — AI Agent Platform</div>
+        <div class="swe-card-org">Quadrant Technologies · Jul 2026–Present</div>
+        <div class="swe-card-desc">Full backend infrastructure for enterprise HR automation. Cosmos DB, Azure AI Search with RAG, Entra ID RBAC. AI agent skills that autonomously fill I-9 forms, retrieve employee records, and trigger downstream workflows. No human in the loop.</div>
+        <div class="swe-stack-pills">
+          <span class="swe-pill">Azure Cosmos DB</span>
+          <span class="swe-pill">RAG</span>
+          <span class="swe-pill">Entra ID</span>
+          <span class="swe-pill">Python</span>
+          <span class="swe-pill">React</span>
+        </div>
+        <div class="swe-card-open">&gt; open_file --details</div>
+      </div>
+      <div class="swe-card swe-accent-purple" onclick="openSweModal('forget')">
+        <div class="swe-card-tag">HACKATHON · 3RD PLACE</div>
+        <div class="swe-card-title">Before I Forget</div>
+        <div class="swe-card-org">AWSHacks 2026 · May 2026</div>
+        <div class="swe-card-desc">Complete serverless AI platform shipped in 24 hours. AWS Lambda, DynamoDB, Step Functions, API Gateway, React frontend. All product and engineering decisions made under extreme deadline pressure.</div>
+        <div class="swe-stack-pills">
+          <span class="swe-pill">AWS Lambda</span>
+          <span class="swe-pill">DynamoDB</span>
+          <span class="swe-pill">Step Functions</span>
+          <span class="swe-pill">React</span>
+        </div>
+        <div class="swe-card-open">&gt; open_file --details</div>
+      </div>
+      <div class="swe-card swe-accent-green" onclick="openSweModal('classiq')">
+        <div class="swe-card-tag">FULL STACK · SHIPPED</div>
+        <div class="swe-card-title">ClassIQ</div>
+        <div class="swe-card-org">Personal Project · 2025–2026</div>
+        <div class="swe-card-desc">LLM-powered academic platform integrated with Canvas LMS via OAuth2 LTI. Context injection pipeline grounds responses in real course materials. Citation-accurate prompting. Streaming responses. Deployed to real students across multiple institutions.</div>
+        <div class="swe-stack-pills">
+          <span class="swe-pill">Python</span>
+          <span class="swe-pill">React</span>
+          <span class="swe-pill">Canvas LMS API</span>
+          <span class="swe-pill">LLMs</span>
+        </div>
+        <div class="swe-card-open">&gt; open_file --details</div>
+      </div>
+      <div class="swe-card swe-accent-pink" onclick="openSweModal('haven')">
+        <div class="swe-card-tag">CONSUMER AI · SOLO BUILD</div>
+        <div class="swe-card-title">Haven</div>
+        <div class="swe-card-org">Personal Project · Apr 2026</div>
+        <div class="swe-card-desc">Chrome extension for real-time misinformation detection using LLM APIs. Content script, background service worker, popup UI — all built from scratch. Prompt engineering pipeline tested against adversarial examples. Solo end-to-end.</div>
+        <div class="swe-stack-pills">
+          <span class="swe-pill">JavaScript</span>
+          <span class="swe-pill">LLM APIs</span>
+          <span class="swe-pill">Chrome Extension</span>
+        </div>
+        <div class="swe-card-open">&gt; open_file --details</div>
+      </div>
+      <div class="swe-card swe-accent-red" onclick="openSweModal('edgesentinel')">
+        <div class="swe-card-tag">SECURITY · PYTHON</div>
+        <div class="swe-card-title">EdgeSentinel</div>
+        <div class="swe-card-org">Personal Project · Apr 2026–Present</div>
+        <div class="swe-card-desc">Security monitoring platform with O(1) OWASP Top 10 detection, thread-safe data structures, adversarial payload generation, and a 14+ scenario test suite with Pytest. Flask and FastAPI middleware integrations for production deployment.</div>
+        <div class="swe-stack-pills">
+          <span class="swe-pill">Python</span>
+          <span class="swe-pill">FastAPI</span>
+          <span class="swe-pill">Pytest</span>
+          <span class="swe-pill">OWASP</span>
+        </div>
+        <div class="swe-card-open">&gt; open_file --details</div>
+      </div>
+      <div class="swe-card swe-accent-amber" onclick="openSweModal('agentic')">
+        <div class="swe-card-tag">MULTI-AGENT · RESEARCH</div>
+        <div class="swe-card-title">Agentic AI Pipeline</div>
+        <div class="swe-card-org">Personal Project · Apr 2026–Present</div>
+        <div class="swe-card-desc">Production multi-agent AI system. Hybrid RAG retrieval, configurable LLM providers (Claude, OpenAI, Gemini), structured output validation, tool-use orchestration. Evaluation pipelines measuring hallucination rates and task completion accuracy.</div>
+        <div class="swe-stack-pills">
+          <span class="swe-pill">Multi-agent</span>
+          <span class="swe-pill">RAG</span>
+          <span class="swe-pill">Claude API</span>
+          <span class="swe-pill">Evaluation</span>
+        </div>
+        <div class="swe-card-open">&gt; open_file --details</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="swe-section">
+    <div class="swe-section-header">
+      <div class="swe-section-title">Contact</div>
+      <div class="swe-section-line"></div>
+    </div>
+    <div class="swe-code-panel" style="max-width:480px;">
+      <div class="swe-code-titlebar">
+        <div class="swe-code-dot"></div><div class="swe-code-dot"></div><div class="swe-code-dot"></div>
+        <div class="swe-code-filename">contact.json</div>
+      </div>
+      <div class="swe-code-body">
+        <div><span class="swe-code-punc">{</span></div>
+        <div>&nbsp;&nbsp;<span class="swe-code-prop">"email"</span><span class="swe-code-punc">:</span> <a href="mailto:anushka.boran8@gmail.com" class="swe-code-str" style="text-decoration:none;">"anushka.boran8@gmail.com"</a><span class="swe-code-punc">,</span></div>
+        <div>&nbsp;&nbsp;<span class="swe-code-prop">"linkedin"</span><span class="swe-code-punc">:</span> <a href="https://linkedin.com/in/anushka-boran" class="swe-code-str" style="text-decoration:none;">"linkedin.com/in/anushka-boran"</a><span class="swe-code-punc">,</span></div>
+        <div>&nbsp;&nbsp;<span class="swe-code-prop">"github"</span><span class="swe-code-punc">:</span> <a href="https://github.com/anushkaboran" class="swe-code-str" style="text-decoration:none;">"github.com/anushkaboran"</a><span class="swe-code-punc">,</span></div>
+        <div>&nbsp;&nbsp;<span class="swe-code-prop">"phone"</span><span class="swe-code-punc">:</span> <span class="swe-code-str">"+1 425-505-6113"</span></div>
+        <div><span class="swe-code-punc">}</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SWE CASE STUDY MODALS — code editor windows ═══ -->
+<div class="swe-modal-overlay" id="sweModalOverlay" onclick="if(event.target===this) closeSweModal()">
+
+  <div class="swe-modal swe-accent-blue" id="sweModalVerahr">
+    <div class="swe-modal-titlebar">
+      <div class="swe-modal-dot"></div><div class="swe-modal-dot"></div><div class="swe-modal-dot"></div>
+      <div class="swe-modal-file">verahr.tsx</div>
+      <button class="swe-modal-close" onclick="closeSweModal()">✕</button>
+    </div>
+    <div class="swe-modal-body">
+      <div class="swe-modal-badge">ENTERPRISE · PRODUCTION</div>
+      <div class="swe-modal-title">VeraHR — AI Agent Platform</div>
+      <div class="swe-modal-tagline">Full backend infrastructure powering an enterprise HR agent platform built during a Quadrant Technologies internship — autonomous, not just conversational.</div>
+
+      <div class="swe-modal-section">
+        <div class="swe-modal-comment">// overview.md</div>
+        <div class="swe-modal-label">OVERVIEW</div>
+        <div class="swe-modal-text">Built the backend infrastructure behind an enterprise HR automation agent used across a 7-person team's platform. Connected the agent to Azure Cosmos DB and Azure AI Search with RAG so it retrieves real employee records instead of hallucinating them, with Entra ID RBAC enforced across every endpoint.</div>
+      </div>
+
+      <div class="swe-modal-section">
+        <div class="swe-modal-comment">// my_role()</div>
+        <div class="swe-modal-label">MY ROLE</div>
+        <div class="swe-modal-text">Implemented AI agent skills that autonomously fill I-9 onboarding forms, retrieve employee records, and trigger downstream workflows — no human required in the loop for routine tasks, while sensitive actions still route through approval gates.</div>
+      </div>
+
+      <div class="swe-modal-section">
+        <div class="swe-modal-label">STACK</div>
+        <div class="swe-modal-tags">
+          <span class="swe-modal-tag">Azure Cosmos DB</span>
+          <span class="swe-modal-tag">RAG</span>
+          <span class="swe-modal-tag">Entra ID</span>
+          <span class="swe-modal-tag">Python</span>
+          <span class="swe-modal-tag">React</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="swe-modal swe-accent-purple" id="sweModalForget">
+    <div class="swe-modal-titlebar">
+      <div class="swe-modal-dot"></div><div class="swe-modal-dot"></div><div class="swe-modal-dot"></div>
+      <div class="swe-modal-file">before_i_forget.py</div>
+      <button class="swe-modal-close" onclick="closeSweModal()">✕</button>
+    </div>
+    <div class="swe-modal-body">
+      <div class="swe-modal-badge">HACKATHON · 3RD PLACE</div>
+      <div class="swe-modal-title">Before I Forget</div>
+      <div class="swe-modal-tagline">A complete serverless AI platform, shipped in 24 hours at AWSHacks 2026.</div>
+
+      <div class="swe-modal-section">
+        <div class="swe-modal-comment">// overview.md</div>
+        <div class="swe-modal-label">OVERVIEW</div>
+        <div class="swe-modal-text">Built a Lambda-first serverless memory-preservation platform end-to-end in a single overnight hackathon window — API Gateway, Step Functions, DynamoDB, and a React frontend, all wired together under real deadline pressure.</div>
+      </div>
+
+      <div class="swe-modal-section">
+        <div class="swe-modal-comment">// my_role()</div>
+        <div class="swe-modal-label">MY ROLE</div>
+        <div class="swe-modal-text">Made the product and engineering trade-off calls in real time — what to build, what to cut, what could be mocked versus what had to be real — while implementing pieces of the AWS Lambda workflow directly.</div>
+      </div>
+
+      <div class="swe-modal-section">
+        <div class="swe-modal-label">STACK</div>
+        <div class="swe-modal-tags">
+          <span class="swe-modal-tag">AWS Lambda</span>
+          <span class="swe-modal-tag">DynamoDB</span>
+          <span class="swe-modal-tag">Step Functions</span>
+          <span class="swe-modal-tag">API Gateway</span>
+          <span class="swe-modal-tag">React</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="swe-modal swe-accent-green" id="sweModalClassiq">
+    <div class="swe-modal-titlebar">
+      <div class="swe-modal-dot"></div><div class="swe-modal-dot"></div><div class="swe-modal-dot"></div>
+      <div class="swe-modal-file">classiq.py</div>
+      <button class="swe-modal-close" onclick="closeSweModal()">✕</button>
+    </div>
+    <div class="swe-modal-body">
+      <div class="swe-modal-badge">FULL STACK · SHIPPED</div>
+      <div class="swe-modal-title">ClassIQ</div>
+      <div class="swe-modal-tagline">An LLM-powered academic support platform embedded directly into Canvas, used by real students across multiple institutions.</div>
+
+      <div class="swe-modal-section">
+        <div class="swe-modal-comment">// overview.md</div>
+        <div class="swe-modal-label">OVERVIEW</div>
+        <div class="swe-modal-text">Built the full-stack integration connecting an LLM-powered chatbot to Canvas LMS via OAuth2 LTI, so it launches directly inside the course a student is already in rather than living as a separate app they have to remember to open.</div>
+      </div>
+
+      <div class="swe-modal-section">
+        <div class="swe-modal-comment">// architecture()</div>
+        <div class="swe-modal-label">ARCHITECTURE</div>
+        <div class="swe-modal-text">Designed a context-injection pipeline that grounds every response in real course materials with citation-accurate prompting, and built streaming responses so answers feel immediate instead of a long wait-then-dump.</div>
+      </div>
+
+      <div class="swe-modal-section">
+        <div class="swe-modal-label">STACK</div>
+        <div class="swe-modal-tags">
+          <span class="swe-modal-tag">Python</span>
+          <span class="swe-modal-tag">React</span>
+          <span class="swe-modal-tag">Canvas LMS API</span>
+          <span class="swe-modal-tag">LLMs</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="swe-modal swe-accent-pink" id="sweModalHaven">
+    <div class="swe-modal-titlebar">
+      <div class="swe-modal-dot"></div><div class="swe-modal-dot"></div><div class="swe-modal-dot"></div>
+      <div class="swe-modal-file">haven.js</div>
+      <button class="swe-modal-close" onclick="closeSweModal()">✕</button>
+    </div>
+    <div class="swe-modal-body">
+      <div class="swe-modal-badge">CONSUMER AI · SOLO BUILD</div>
+      <div class="swe-modal-title">Haven</div>
+      <div class="swe-modal-tagline">A Chrome extension that flags misinformation in real time, built solo from content script to popup UI.</div>
+
+      <div class="swe-modal-section">
+        <div class="swe-modal-comment">// overview.md</div>
+        <div class="swe-modal-label">OVERVIEW</div>
+        <div class="swe-modal-text">Built every layer of this Chrome extension solo — content script, background service worker, and popup UI — from scratch, to catch misinformation as a user scrolls rather than after the fact.</div>
+      </div>
+
+      <div class="swe-modal-section">
+        <div class="swe-modal-comment">// testing()</div>
+        <div class="swe-modal-label">PROMPT ENGINEERING & TESTING</div>
+        <div class="swe-modal-text">Designed the prompt-engineering pipeline that classifies page content in real time, then stress-tested it against adversarial examples specifically designed to fool the classifier before considering it done.</div>
+      </div>
+
+      <div class="swe-modal-section">
+        <div class="swe-modal-label">STACK</div>
+        <div class="swe-modal-tags">
+          <span class="swe-modal-tag">JavaScript</span>
+          <span class="swe-modal-tag">LLM APIs</span>
+          <span class="swe-modal-tag">Chrome Extension APIs</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="swe-modal swe-accent-red" id="sweModalEdgesentinel">
+    <div class="swe-modal-titlebar">
+      <div class="swe-modal-dot"></div><div class="swe-modal-dot"></div><div class="swe-modal-dot"></div>
+      <div class="swe-modal-file">edge_sentinel.py</div>
+      <button class="swe-modal-close" onclick="closeSweModal()">✕</button>
+    </div>
+    <div class="swe-modal-body">
+      <div class="swe-modal-badge">SECURITY · PYTHON</div>
+      <div class="swe-modal-title">EdgeSentinel</div>
+      <div class="swe-modal-tagline">A security monitoring platform detecting OWASP Top 10 attack patterns in real time with O(1) lookups.</div>
+
+      <div class="swe-modal-section">
+        <div class="swe-modal-comment">// overview.md</div>
+        <div class="swe-modal-label">OVERVIEW</div>
+        <div class="swe-modal-text">Built a Python security monitoring platform around O(1) hash-based detection for OWASP Top 10 attack patterns, using thread-safe data structures so throughput doesn't degrade as traffic scales.</div>
+      </div>
+
+      <div class="swe-modal-section">
+        <div class="swe-modal-comment">// testing()</div>
+        <div class="swe-modal-label">TESTING & DEPLOYMENT</div>
+        <div class="swe-modal-text">Built a CLI fuzzer to generate adversarial payloads and validated detection across a 14+ scenario Pytest suite, with Flask and FastAPI middleware integrations so it can drop directly into a production request pipeline.</div>
+      </div>
+
+      <div class="swe-modal-section">
+        <div class="swe-modal-label">STACK</div>
+        <div class="swe-modal-tags">
+          <span class="swe-modal-tag">Python</span>
+          <span class="swe-modal-tag">FastAPI</span>
+          <span class="swe-modal-tag">Pytest</span>
+          <span class="swe-modal-tag">OWASP</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="swe-modal swe-accent-amber" id="sweModalAgentic">
+    <div class="swe-modal-titlebar">
+      <div class="swe-modal-dot"></div><div class="swe-modal-dot"></div><div class="swe-modal-dot"></div>
+      <div class="swe-modal-file">agentic_pipeline.py</div>
+      <button class="swe-modal-close" onclick="closeSweModal()">✕</button>
+    </div>
+    <div class="swe-modal-body">
+      <div class="swe-modal-badge">MULTI-AGENT · RESEARCH</div>
+      <div class="swe-modal-title">Agentic AI Pipeline</div>
+      <div class="swe-modal-tagline">A production multi-agent AI system built to measure — not just guess — how well agents actually perform.</div>
+
+      <div class="swe-modal-section">
+        <div class="swe-modal-comment">// overview.md</div>
+        <div class="swe-modal-label">OVERVIEW</div>
+        <div class="swe-modal-text">Built a multi-agent pipeline supporting hybrid RAG retrieval and configurable LLM providers (Claude, OpenAI, Gemini), so the system isn't locked into a single model vendor, plus structured output validation and tool-use orchestration across agents.</div>
+      </div>
+
+      <div class="swe-modal-section">
+        <div class="swe-modal-comment">// evaluate()</div>
+        <div class="swe-modal-label">EVALUATION</div>
+        <div class="swe-modal-text">Built evaluation pipelines that directly measure hallucination rates and task completion accuracy, instead of relying on gut feel about whether a given agent configuration was actually working.</div>
+      </div>
+
+      <div class="swe-modal-section">
+        <div class="swe-modal-label">STACK</div>
+        <div class="swe-modal-tags">
+          <span class="swe-modal-tag">Multi-agent orchestration</span>
+          <span class="swe-modal-tag">RAG</span>
+          <span class="swe-modal-tag">Claude API</span>
+          <span class="swe-modal-tag">Evaluation pipelines</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+function openSweModal(id) {
+  document.querySelectorAll('.swe-modal').forEach(el => el.style.display = 'none');
+  const modal = document.getElementById('sweModal' + id.charAt(0).toUpperCase() + id.slice(1));
+  if (modal) modal.style.display = 'block';
+  document.getElementById('sweModalOverlay').classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+function closeSweModal() {
+  document.getElementById('sweModalOverlay').classList.remove('active');
+  document.body.style.overflow = '';
+}
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') closeSweModal();
+});
+</script>
+</body>
+</html>
